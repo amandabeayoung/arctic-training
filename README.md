@@ -1,7 +1,7 @@
 # Arctic Training
 Testing Repository for the Arctic Data Center Training
 ##Contributors
-- Amanda Young is the best
+- Amanda Young and Allen Bondurant are the best
 - Mathew Jones
 - Others
 
