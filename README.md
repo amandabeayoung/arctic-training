@@ -10,6 +10,10 @@ More text
 * apples
 * oranges
 * Git users
+* avocados
+* berries
+* cats
+* dogs
 
 
 Now I am adding more text to see what will happen
