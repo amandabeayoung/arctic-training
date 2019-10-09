@@ -2,7 +2,9 @@
 title: "Data-tidying-lesson"
 author: "Amanda B. Young"
 date: "10/9/2019"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
