@@ -1,0 +1,73 @@
+---
+title: "R and RMarkdown Intro"
+author: "Amanda B. Young"
+date: "10/8/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Header 1
+**bold text**
+*italics*
+
+You can just type free text
+this will be on the same line
+
+This is a new paragraph
+
+1. apple
+1. bannana
+1. orange
+
+
+1. apple
+1. bannana
+1. orange
+
+```{r, first_chunk}
+# comment
+x<-12.12345
+```
+Tthe result is `r round(x,2)`
+
+## Random
+### This code sets up a random distribution of 100
+
+$$\sum{x^2}$$
+
+```{r second chunk}
+x<-rnorm(100)
+hist(x)
+```
+
+THis is the mean of the random distribution `r mean(x)`
+
+```{r}
+x<-c(1,2,3)
+mean_x<-mean(x)
+```
+
+# Read in a file
+Read in a file downloaded from the Arctic Data Center. This is from [Tweedie 2009](https://doi.org/10.18739/A25T3FZ8X)
+
+```{r}
+bg_chem<-read.csv(file = "BGchem2008data.csv" , stringsAsFactors = FALSE)
+head(bg_chem)
+```
+
+`$` list selector operator to select a particular column
+
+Short cut to run a chunk is Ctrl+Alt+C
+
+```{r}
+mean_temp <- mean(bg_chem$CTD_Temperature)
+mean_temp
+```
+
+```{r}
+plot(x = bg_chem$CTD_Depth, y=bg_chem$CTD_Temperature)
+```
+
