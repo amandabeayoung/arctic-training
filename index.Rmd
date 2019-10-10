@@ -1,5 +1,5 @@
 ---
-title: "My Webpage"
+title: "Salmon of Alaska"
 author: "Amanda B. Young"
 date: "10/10/2019"
 output: html_document
@@ -14,6 +14,8 @@ knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 library(tidyr)
 library(ggplot2)
+library(DT)
+library(leaflet)
 ```
 
 
@@ -62,17 +64,56 @@ ggplot(data = filter(annual_esc, SASAP.Region == "Kodiak"), aes(x=Year, y=annual
   my_theme
 ```
 ```{r, fig.width = 7, fig.height = 12}
-ggplot(data = annual_esc, aes(x=Year, y=annual_count, colour=Species))+
+fig1<-ggplot(data = annual_esc, aes(x=Year, y=annual_count, colour=Species))+
   geom_point()+geom_line()+
   ylab("Escapment (no. fish)")+
   ggtitle("Kodiak Salmon Escapement")+
   my_theme +
   facet_wrap(.~SASAP.Region, scales="free_y", ncol=1)
+fig1
+ggsave("figures/escapment.png", fig1, width = 12, height=7, units = "in")
 ```
 
 
 # Map Sampling Locations
-```{r}
 
+Create a table with unique sampling locations, latitudes, and longitudes
+`distinct()` pulls out unique rows or columns
+```{r extract-locations}
+locations<-esc %>% 
+  distinct(Location, Latitude, Longitude) %>% 
+  drop_na()
+  
+
+```
+Use the `DT` package function `datatable` this makes tables that are interacting in the RMarkdown when running as a html
+
+```{r interactive-table}
+datatable(locations)
+```
+
+```{r mapmaking}
+leaflet(locations) %>% 
+  addTiles() %>% 
+  addCircleMarkers(~ Longitude, ~ Latitude, popup = ~ Location)
+```
+
+```{r}
+leaflet(locations) %>% 
+  addWMSTiles("https://www.gebco.net/data_and_products/gebco_web_services/web_map_service/mapserv?",
+              layers = 'GEBCO_LATEST',
+              attribution = "Imagery reproduced from the GEBCO_2014 Grid, version 20150318, www.gebco.net") %>%
+  addCircleMarkers(lng = ~Longitude,
+                   lat = ~Latitude,
+                   popup = ~ Location,
+                   radius = 5,
+                   # set fill properties
+                   fillColor = "salmon",
+                   fillOpacity = 1,
+                   # set stroke properties
+                   stroke = T,
+                   weight = 0.5,
+                   color = "white",
+                   opacity = 1)
 ```
 
