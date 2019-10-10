@@ -1,0 +1,177 @@
+---
+title: "Data-tidying-lesson"
+author: "Amanda B. Young"
+date: "10/9/2019"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r libraries, warning = FALSE, message= FALSE}
+library(tidyr)
+library(ggplot2)
+library(dplyr)
+```
+
+To access `filter` from the `stats` package: `stats::filter()`
+
+#Read in and clean up data
+
+```{r open file}
+catch_original <- read.csv(url("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/df35b.302.1", method = "libcurl"),
+                    stringsAsFactors = FALSE)
+head(catch_original)
+
+```
+
+`stringsAsFactors` reads characters as factors rather than characters, keeps the future issues down
+Try to allways set `stingsAsFactors` to `FALSE`
+
+
+Select the columns we want using the `select()`
+
+```{r select-columns}
+catch_data<-catch_original %>% 
+  #select(Region, Year, Chinook, Sockeye, Coho, Pink, Chum) 
+  select(-All, -notesRegCode)
+head(catch_data)
+
+```
+
+```{r summary-data1}
+summary(catch_data)
+```
+
+Change the values in the CHinook column to numeric using `mutate()`
+```{r clean-data1}
+catch_clean<- catch_data %>% 
+  mutate(Chinook=as.numeric(Chinook))
+head(catch_clean)
+```
+
+Investigate using `which()` and `is.na()`
+
+```{r NA-check}
+i<- which(is.na(catch_clean$Chinook))
+i
+```
+```{r}
+catch_original[i,]
+```
+
+* use `mutate` to change the I to 1
+* use `mutate` to coerce Chinook column to numeric
+` %in%` can be used instead of `|` as an or when using ifelse
+```{r keep-cleaning}
+catch_clean<-catch_data %>% 
+  #mutate(Chinook = ifelse(Chinook == "I"| Chinook =="l")) %>% 
+  mutate(Chinook = ifelse(Chinook  %in%  c("I", "l"), 1, Chinook)) %>% 
+  mutate(Chinook=as.numeric(Chinook))
+head(catch_clean)
+```
+
+# Tidy Data
+Move from wide formate to tall format using `pivot_longer`
+```{r long}
+catch_long<-catch_clean %>% 
+  pivot_longer(cols=-c(Region, Year), 
+               names_to = "Species",
+               values_to = "Catch")
+head(catch_long)
+```
+
+```{r wide}
+catch_wide<-catch_long %>% 
+  pivot_wider(names_from = Species,
+              values_from = Catch)
+head(catch_wide)
+```
+
+`rename()` catch to catch_thousands
+`mutate()` to 
+```{r thousand}
+catch_long<-catch_long %>% 
+  mutate(Catch=Catch*1000) 
+```
+
+# Summarize Data
+mean catch by region of Sockeye
+
+```{r fiter-group-Sockeye}
+mean_region<-catch_long %>% 
+  group_by(Region) %>% 
+    filter(Species == "Sockeye") %>% 
+summarise(mean_catch=mean(Catch),
+            n_obs=n())
+head(mean_region)
+```
+
+total annual catch
+```{r}
+annual_catch<-catch_long %>% 
+  group_by(Year) %>% 
+  summarise(total_catch = sum(Catch)) %>% 
+  arrange(desc(total_catch))
+annual_catch
+
+```
+
+```{r}
+ggplot(annual_catch, aes(x=Year, y=total_catch))+
+  geom_point()
+```
+
+```{r}
+
+catch_long %>% 
+  group_by(Year,Species) %>% 
+  summarise(total_catch = sum(Catch)) %>% 
+  arrange(desc(total_catch)) %>% 
+  ggplot(aes(x=Year, y=total_catch, colour=Species))+
+  geom_point()
+
+```
+)
+
+```{r regions}
+region_defs<- read.csv(url("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/df35b.303.1", method = "libcurl"),
+                    stringsAsFactors = FALSE) %>% 
+  select(code, mgmtArea) %>% 
+  rename(Region = code)
+head(region_defs)
+
+
+```
+
+Create a join between catch and region files
+```{r join}
+#catch_joined<-left_join(catch_long, region_defs, by=c("Region"= "code"))
+catch_joined<-left_join(catch_long, region_defs, by="Region")
+catch_joined<- left_join(catch_long, region_defs)
+head(catch_joined)
+```
+
+```{r seperate}
+dates_df <- data.frame(date = c("5/24/1930",
+                                "5/25/1930",
+                                "5/26/1930",
+                                "5/27/1930",
+                                "5/28/1930"),
+                       stringsAsFactors = FALSE)
+
+dates_df %>% 
+  separate(date, into = c("month", "day", "year"), sep = "/", remove = FALSE) %>% 
+  unite(date_2, year, month, day, sep="-")
+```
+
+can use substr to seperate a variable by the number of integers, also can use package `stringr::str_sub` to get the last few integers
+`string_pad` can say I want two digits but if I only have a 5 then it would become 05
+
+```{r}
+
+```
+

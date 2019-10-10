@@ -1,0 +1,512 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Data-tidying-lesson},
+            pdfauthor={Amanda B. Young},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\providecommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{Data-tidying-lesson}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{Amanda B. Young}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+      \predate{\centering\large\emph}
+  \postdate{\par}
+    \date{10/9/2019}
+
+
+\begin{document}
+\maketitle
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(tidyr)}
+\KeywordTok{library}\NormalTok{(ggplot2)}
+\KeywordTok{library}\NormalTok{(dplyr)}
+\end{Highlighting}
+\end{Shaded}
+
+To access \texttt{filter} from the \texttt{stats} package:
+\texttt{stats::filter()}
+
+\#Read in and clean up data
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{catch_original <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(}\KeywordTok{url}\NormalTok{(}\StringTok{"https://knb.ecoinformatics.org/knb/d1/mn/v2/object/df35b.302.1"}\NormalTok{, }\DataTypeTok{method =} \StringTok{"libcurl"}\NormalTok{),}
+                    \DataTypeTok{stringsAsFactors =} \OtherTok{FALSE}\NormalTok{)}
+\KeywordTok{head}\NormalTok{(catch_original)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   Region Year Chinook Sockeye Coho Pink Chum All notesRegCode
+## 1    SSE 1886       0       5    0    0    0   5             
+## 2    SSE 1887       0     155    0    0    0 155             
+## 3    SSE 1888       0     224   16    0    0 240             
+## 4    SSE 1889       0     182   11   92    0 285             
+## 5    SSE 1890       0     251   42    0    0 292             
+## 6    SSE 1891       0     274   24    0    0 298
+\end{verbatim}
+
+\texttt{stringsAsFactors} reads characters as factors rather than
+characters, keeps the future issues down Try to allways set
+\texttt{stingsAsFactors} to \texttt{FALSE}
+
+Select the columns we want using the \texttt{select()}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{catch_data<-catch_original }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\CommentTok{#select(Region, Year, Chinook, Sockeye, Coho, Pink, Chum) }
+\StringTok{  }\KeywordTok{select}\NormalTok{(}\OperatorTok{-}\NormalTok{All, }\OperatorTok{-}\NormalTok{notesRegCode)}
+\KeywordTok{head}\NormalTok{(catch_data)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   Region Year Chinook Sockeye Coho Pink Chum
+## 1    SSE 1886       0       5    0    0    0
+## 2    SSE 1887       0     155    0    0    0
+## 3    SSE 1888       0     224   16    0    0
+## 4    SSE 1889       0     182   11   92    0
+## 5    SSE 1890       0     251   42    0    0
+## 6    SSE 1891       0     274   24    0    0
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(catch_data)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     Region               Year        Chinook             Sockeye        
+##  Length:1708        Min.   :1878   Length:1708        Min.   :    0.00  
+##  Class :character   1st Qu.:1922   Class :character   1st Qu.:    6.75  
+##  Mode  :character   Median :1947   Mode  :character   Median :  330.50  
+##                     Mean   :1946                      Mean   : 1401.09  
+##                     3rd Qu.:1972                      3rd Qu.:  995.50  
+##                     Max.   :1997                      Max.   :44269.00  
+##       Coho             Pink              Chum        
+##  Min.   :   0.0   Min.   :    0.0   Min.   :    0.0  
+##  1st Qu.:   0.0   1st Qu.:    0.0   1st Qu.:    0.0  
+##  Median :  41.5   Median :   34.5   Median :   63.0  
+##  Mean   : 150.4   Mean   : 2357.8   Mean   :  422.0  
+##  3rd Qu.: 175.0   3rd Qu.: 1622.5   3rd Qu.:  507.5  
+##  Max.   :3220.0   Max.   :53676.0   Max.   :10459.0
+\end{verbatim}
+
+Change the values in the CHinook column to numeric using
+\texttt{mutate()}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{catch_clean<-}\StringTok{ }\NormalTok{catch_data }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{Chinook=}\KeywordTok{as.numeric}\NormalTok{(Chinook))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: NAs introduced by coercion
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{head}\NormalTok{(catch_clean)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   Region Year Chinook Sockeye Coho Pink Chum
+## 1    SSE 1886       0       5    0    0    0
+## 2    SSE 1887       0     155    0    0    0
+## 3    SSE 1888       0     224   16    0    0
+## 4    SSE 1889       0     182   11   92    0
+## 5    SSE 1890       0     251   42    0    0
+## 6    SSE 1891       0     274   24    0    0
+\end{verbatim}
+
+Investigate using \texttt{which()} and \texttt{is.na()}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{i<-}\StringTok{ }\KeywordTok{which}\NormalTok{(}\KeywordTok{is.na}\NormalTok{(catch_clean}\OperatorTok{$}\NormalTok{Chinook))}
+\NormalTok{i}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 401
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{catch_original[i,]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     Region Year Chinook Sockeye Coho Pink Chum All notesRegCode
+## 401    GSE 1955       I      66    0    0    1  68
+\end{verbatim}
+
+\begin{itemize}
+\tightlist
+\item
+  use \texttt{mutate} to change the I to 1
+\item
+  use \texttt{mutate} to coerce Chinook column to numeric
+  \texttt{\%in\%} can be used instead of \texttt{\textbar{}} as an or
+  when using ifelse
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{catch_clean<-catch_data }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\CommentTok{#mutate(Chinook = ifelse(Chinook == "I"| Chinook =="l")) %>% }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{Chinook =} \KeywordTok{ifelse}\NormalTok{(Chinook  }\OperatorTok{%in%}\StringTok{  }\KeywordTok{c}\NormalTok{(}\StringTok{"I"}\NormalTok{, }\StringTok{"l"}\NormalTok{), }\DecValTok{1}\NormalTok{, Chinook)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{Chinook=}\KeywordTok{as.numeric}\NormalTok{(Chinook))}
+\KeywordTok{head}\NormalTok{(catch_clean)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   Region Year Chinook Sockeye Coho Pink Chum
+## 1    SSE 1886       0       5    0    0    0
+## 2    SSE 1887       0     155    0    0    0
+## 3    SSE 1888       0     224   16    0    0
+## 4    SSE 1889       0     182   11   92    0
+## 5    SSE 1890       0     251   42    0    0
+## 6    SSE 1891       0     274   24    0    0
+\end{verbatim}
+
+\hypertarget{tidy-data}{%
+\section{Tidy Data}\label{tidy-data}}
+
+Move from wide formate to tall format using \texttt{pivot\_longer}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{catch_long<-catch_clean }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{pivot_longer}\NormalTok{(}\DataTypeTok{cols=}\OperatorTok{-}\KeywordTok{c}\NormalTok{(Region, Year), }
+               \DataTypeTok{names_to =} \StringTok{"Species"}\NormalTok{,}
+               \DataTypeTok{values_to =} \StringTok{"Catch"}\NormalTok{)}
+\KeywordTok{head}\NormalTok{(catch_long)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 6 x 4
+##   Region  Year Species Catch
+##   <chr>  <int> <chr>   <dbl>
+## 1 SSE     1886 Chinook     0
+## 2 SSE     1886 Sockeye     5
+## 3 SSE     1886 Coho        0
+## 4 SSE     1886 Pink        0
+## 5 SSE     1886 Chum        0
+## 6 SSE     1887 Chinook     0
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{catch_wide<-catch_long }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{pivot_wider}\NormalTok{(}\DataTypeTok{names_from =}\NormalTok{ Species,}
+              \DataTypeTok{values_from =}\NormalTok{ Catch)}
+\KeywordTok{head}\NormalTok{(catch_wide)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 6 x 7
+##   Region  Year Chinook Sockeye  Coho  Pink  Chum
+##   <chr>  <int>   <dbl>   <dbl> <dbl> <dbl> <dbl>
+## 1 SSE     1886       0       5     0     0     0
+## 2 SSE     1887       0     155     0     0     0
+## 3 SSE     1888       0     224    16     0     0
+## 4 SSE     1889       0     182    11    92     0
+## 5 SSE     1890       0     251    42     0     0
+## 6 SSE     1891       0     274    24     0     0
+\end{verbatim}
+
+\texttt{rename()} catch to catch\_thousands \texttt{mutate()} to
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{catch_long<-catch_long }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{Catch=}\NormalTok{Catch}\OperatorTok{*}\DecValTok{1000}\NormalTok{) }
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{summarize-data}{%
+\section{Summarize Data}\label{summarize-data}}
+
+mean catch by region of Sockeye
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mean_region<-catch_long }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(Region) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\KeywordTok{filter}\NormalTok{(Species }\OperatorTok{==}\StringTok{ "Sockeye"}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{mean_catch=}\KeywordTok{mean}\NormalTok{(Catch),}
+            \DataTypeTok{n_obs=}\KeywordTok{n}\NormalTok{())}
+\KeywordTok{head}\NormalTok{(mean_region)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 6 x 3
+##   Region mean_catch n_obs
+##   <chr>       <dbl> <int>
+## 1 ALU         6839.    87
+## 2 BER        36882.   102
+## 3 BRB     12516500    114
+## 4 CHG       962600    110
+## 5 CKI      1772952.   105
+## 6 COP       699628.    94
+\end{verbatim}
+
+total annual catch
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{annual_catch<-catch_long }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(Year) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{total_catch =} \KeywordTok{sum}\NormalTok{(Catch)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{arrange}\NormalTok{(}\KeywordTok{desc}\NormalTok{(total_catch))}
+\NormalTok{annual_catch}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 120 x 2
+##     Year total_catch
+##    <int>       <dbl>
+##  1  1995   217260000
+##  2  1994   195882000
+##  3  1993   193107000
+##  4  1991   189520000
+##  5  1996   176072000
+##  6  1990   155058000
+##  7  1989   154127000
+##  8  1985   146359000
+##  9  1992   136726000
+## 10  1984   133964000
+## # ... with 110 more rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggplot}\NormalTok{(annual_catch, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{Year, }\DataTypeTok{y=}\NormalTok{total_catch))}\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Tidy_RM_files/figure-latex/unnamed-chunk-3-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{catch_long }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(Year,Species) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{total_catch =} \KeywordTok{sum}\NormalTok{(Catch)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{arrange}\NormalTok{(}\KeywordTok{desc}\NormalTok{(total_catch)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{Year, }\DataTypeTok{y=}\NormalTok{total_catch, }\DataTypeTok{colour=}\NormalTok{Species))}\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Tidy_RM_files/figure-latex/unnamed-chunk-4-1.pdf} )
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{region_defs<-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(}\KeywordTok{url}\NormalTok{(}\StringTok{"https://knb.ecoinformatics.org/knb/d1/mn/v2/object/df35b.303.1"}\NormalTok{, }\DataTypeTok{method =} \StringTok{"libcurl"}\NormalTok{),}
+                    \DataTypeTok{stringsAsFactors =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{select}\NormalTok{(code, mgmtArea) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{rename}\NormalTok{(}\DataTypeTok{Region =}\NormalTok{ code)}
+\KeywordTok{head}\NormalTok{(region_defs)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    Region                                  mgmtArea
+## 1     GSE              Unallocated Southeast Alaska
+## 2     NSE                 Northern Southeast Alaska
+## 3     SSE                 Southern Southeast Alaska
+## 4     YAK                                   Yakutat
+## 5 PWSmgmt      Prince William Sound Management Area
+## 6     BER Bering River Subarea Copper River Subarea
+\end{verbatim}
+
+Create a join between catch and region files
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#catch_joined<-left_join(catch_long, region_defs, by=c("Region"= "code"))}
+\NormalTok{catch_joined<-}\KeywordTok{left_join}\NormalTok{(catch_long, region_defs, }\DataTypeTok{by=}\StringTok{"Region"}\NormalTok{)}
+\NormalTok{catch_joined<-}\StringTok{ }\KeywordTok{left_join}\NormalTok{(catch_long, region_defs)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Joining, by = "Region"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{head}\NormalTok{(catch_joined)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 6 x 5
+##   Region  Year Species Catch mgmtArea                 
+##   <chr>  <int> <chr>   <dbl> <chr>                    
+## 1 SSE     1886 Chinook     0 Southern Southeast Alaska
+## 2 SSE     1886 Sockeye  5000 Southern Southeast Alaska
+## 3 SSE     1886 Coho        0 Southern Southeast Alaska
+## 4 SSE     1886 Pink        0 Southern Southeast Alaska
+## 5 SSE     1886 Chum        0 Southern Southeast Alaska
+## 6 SSE     1887 Chinook     0 Southern Southeast Alaska
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dates_df <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{date =} \KeywordTok{c}\NormalTok{(}\StringTok{"5/24/1930"}\NormalTok{,}
+                                \StringTok{"5/25/1930"}\NormalTok{,}
+                                \StringTok{"5/26/1930"}\NormalTok{,}
+                                \StringTok{"5/27/1930"}\NormalTok{,}
+                                \StringTok{"5/28/1930"}\NormalTok{),}
+                       \DataTypeTok{stringsAsFactors =} \OtherTok{FALSE}\NormalTok{)}
+
+\NormalTok{dates_df }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{separate}\NormalTok{(date, }\DataTypeTok{into =} \KeywordTok{c}\NormalTok{(}\StringTok{"month"}\NormalTok{, }\StringTok{"day"}\NormalTok{, }\StringTok{"year"}\NormalTok{), }\DataTypeTok{sep =} \StringTok{"/"}\NormalTok{, }\DataTypeTok{remove =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{unite}\NormalTok{(date_}\DecValTok{2}\NormalTok{, year, month, day, }\DataTypeTok{sep=}\StringTok{"-"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        date    date_2
+## 1 5/24/1930 1930-5-24
+## 2 5/25/1930 1930-5-25
+## 3 5/26/1930 1930-5-26
+## 4 5/27/1930 1930-5-27
+## 5 5/28/1930 1930-5-28
+\end{verbatim}
+
+can use substr to seperate a variable by the number of integers, also
+can use package \texttt{stringr::str\_sub} to get the last few integers
+\texttt{string\_pad} can say I want two digits but if I only have a 5
+then it would become 05
+
+
+\end{document}
