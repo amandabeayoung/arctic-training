@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-```{r libraries, warning = FALSE, message = FALSE, error = FALSE}
+```{r libraries, warning = FALSE, message = FALSE}
 library(dplyr)
 library(tidyr)
 library(ggplot2)
@@ -27,7 +27,7 @@ head(esc)
 
 # Calculate Annual Escapement for Salmon Species
 
-```{r clean-data}
+```{r clean-data, results = "hide"}
 species_list<-c("Chinook", "Sockeye", "Chum", "Pink", "Coho")
 
 annual_esc<-esc %>% 
@@ -43,11 +43,33 @@ head(annual_esc)
 ```
 
 # Visualize Escapement
-```{r ggplot}
+Total Escapment by Region and Species
+```{r ggplot, echo = FALSE}
 ggplot(annual_esc, aes(x=Species, y=annual_count))+
   #geom_point(aes(colour=SASAP.Region))
   geom_col(aes(fill=SASAP.Region, colour=SASAP.Region))
 ```
+Kodiak Escapment Over Time by Species
+```{r}
+
+my_theme<- 
+  theme_bw()+
+  theme(legend.position = "bottom")
+ggplot(data = filter(annual_esc, SASAP.Region == "Kodiak"), aes(x=Year, y=annual_count, colour=Species))+
+  geom_point()+geom_line()+
+  ylab("Escapment (no. fish)")+
+  ggtitle("Kodiak Salmon Escapement")+
+  my_theme
+```
+```{r, fig.width = 7, fig.height = 12}
+ggplot(data = annual_esc, aes(x=Year, y=annual_count, colour=Species))+
+  geom_point()+geom_line()+
+  ylab("Escapment (no. fish)")+
+  ggtitle("Kodiak Salmon Escapement")+
+  my_theme +
+  facet_wrap(.~SASAP.Region, scales="free_y", ncol=1)
+```
+
 
 # Map Sampling Locations
 ```{r}
